@@ -1,0 +1,453 @@
+<!DOCTYPE html>
+<html lang="he" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex">
+<title>מחשבון לקוחות דרור הצעירים 2</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Hebrew:wght@400;500;600;700&display=swap">
+<style>
+/* VOICE work: a buyer's money tool; calm, exact, ordered by domain
+   IDEA the developer's site plan and term sheet in one instrument: pick a unit on the plan, then read your money, the loans, and the house's value
+   PICTURE the plot map (44 units shaded by land size) beside a sticky readout; payment stages as three colour-coded areas
+   COLOUR aluminium #e9eaec ground, black ink; orange #e8590c land, blue #2a78d6 construction, green #0f9d7a financing; solid = your money, hatched = loan; night #141517
+   TYPE IBM Plex Sans Hebrew 700 for figures and titles, 400 to 600 for text
+   LAYOUT laptop: inputs (map, financing, value) on the right, sticky results on the left; areas in three columns; chart; tables. Phone: map, results, inputs, areas, chart, tables */
+:root{color-scheme:light dark;--bg:light-dark(#e9eaec,#141517);--panel:light-dark(#fbfbfb,#1d1f22);--field:light-dark(#fff,#16181b);--ink:light-dark(#111214,#eef0f2);--ink2:light-dark(#464a51,#b8bdc5);--mut:light-dark(#5d626a,#9298a0);--rule:light-dark(#d9dce0,#2e3137);--line:light-dark(#bfc3c9,#474b52);
+--land:light-dark(#e8590c,#e8641f);--build:light-dark(#2a78d6,#3987e5);--fin:light-dark(#0f9d7a,#1aa886);--landT:light-dark(#a8430a,#f59a62);--buildT:light-dark(#1b5aa6,#8bb8f5);--finT:light-dark(#0b7259,#5fd3b4);
+--s1:light-dark(#fde4d4,#4a2a1a);--s2:light-dark(#f9bf98,#7a3d1c);--s3:light-dark(#f39558,#b5541f);--s4:light-dark(#e8590c,#e8641f);--s5:light-dark(#a8430a,#f59a62);--road:light-dark(#d3d6da,#33363c);--park:light-dark(#cfe8c4,#26402a)}
+:root[data-theme=light]{color-scheme:light}
+:root[data-theme=dark]{color-scheme:dark}
+*{box-sizing:border-box;min-width:0}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "IBM Plex Sans Hebrew",system-ui,"Segoe UI",Arial,sans-serif;overflow-x:clip}
+.band{padding-block:clamp(16px,2.6vw,32px);padding-left:max(4vw,16px,env(safe-area-inset-left,0px));padding-right:max(4vw,16px,env(safe-area-inset-right,0px))}
+.wrap{max-width:1240px;margin-inline:auto}
+h1{font-size:clamp(32px,4.4vw,46px);line-height:1.05;letter-spacing:-.02em;margin:0;font-weight:700}
+.sub{margin:8px 0 0;color:var(--ink2);font-size:17px;max-width:70ch}
+button:focus-visible,select:focus-visible,summary:focus-visible,input[type=range]:focus-visible{outline:2px solid var(--build);outline-offset:2px}
+.top{padding-top:0}
+.cg{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:960px){.cg{grid-template-columns:minmax(0,7fr) minmax(0,5fr);grid-template-areas:"plot res" "fin res" "val res";align-items:start}#plot{grid-area:plot}#fin{grid-area:fin}#val{grid-area:val}.res{grid-area:res;position:sticky;top:16px}}
+.panel{background:var(--panel);border:1px solid var(--rule);border-radius:16px;padding:clamp(18px,2.4vw,26px)}
+.h3{display:flex;align-items:center;gap:10px;font-size:19px;font-weight:700;margin:0 0 12px;letter-spacing:-.01em}
+.n{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--ink);color:var(--panel);font-size:15px;flex:none}
+.mapw{position:relative}
+#map{display:block;width:100%;height:auto;direction:ltr}
+#map .road{fill:none;stroke:var(--road);stroke-width:22;stroke-linecap:round}
+#map .park{fill:none;stroke:var(--park);stroke-width:16;stroke-linecap:round}
+#map .lot{fill:var(--bg);stroke:var(--line);stroke-width:1}
+#map .u{stroke:var(--panel);stroke-width:1.5;cursor:pointer;outline:none}
+#map .u:hover{stroke:var(--ink2);stroke-width:2}
+#map .u:focus-visible{stroke:var(--build);stroke-width:3}
+#map .u.on{stroke:var(--ink);stroke-width:3.5}
+#map .c1{fill:var(--s1)}#map .c2{fill:var(--s2)}#map .c3{fill:var(--s3)}#map .c4{fill:var(--s4)}#map .c5{fill:var(--s5)}
+#map text{font-family:inherit;font-size:12px;fill:var(--ink2);paint-order:stroke;stroke:var(--panel);stroke-width:3px}
+#map .ml{font-size:13px;fill:var(--mut)}
+.mlg{display:flex;flex-wrap:wrap;align-items:center;gap:4px 12px;margin:8px 0 0;font-size:13px;color:var(--ink2)}
+.mlg span{display:inline-flex;align-items:center;gap:5px}
+.sw{display:inline-block;width:12px;height:12px;border-radius:3px;flex:none}
+.g2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;align-items:end;margin-top:14px}
+.fl{display:flex;flex-direction:column;gap:6px}
+.lb{font-size:14px;color:var(--ink2);display:flex;flex-wrap:wrap;align-items:center;gap:2px 8px}
+.hint{font-size:13px;color:var(--mut)}
+.box{display:flex;align-items:center;gap:8px;height:48px;padding-inline:12px;border:1px solid var(--line);border-radius:10px;background:var(--field)}
+.box:focus-within{border-color:var(--build);box-shadow:0 0 0 3px color-mix(in srgb,var(--build) 25%,transparent)}
+.box input,.box select{flex:1;width:100%;border:0;outline:0;background:none;color:var(--ink);font:inherit;font-size:17px;font-weight:600;padding:0}
+.box i{font-style:normal;color:var(--mut);font-weight:500}
+.uinfo{font-size:15px;color:var(--ink2);min-height:48px;display:flex;align-items:center}
+.uinfo b{color:var(--ink)}
+.sl{display:grid;margin-top:14px}
+.slh{display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:14px;color:var(--ink2)}
+.slh b{font-size:17px;color:var(--ink);white-space:nowrap}
+.slh input{width:9.5em;text-align:left;direction:ltr;border:1px solid var(--line);border-radius:8px;background:var(--field);color:var(--ink);font:inherit;font-size:16px;font-weight:600;padding:6px 8px;height:40px}
+input[type=range]{width:100%;height:44px;margin:0;cursor:pointer;background:none}
+.rl{accent-color:var(--land)}.rb{accent-color:var(--build)}.rf{accent-color:var(--fin)}.rv{accent-color:var(--ink)}
+.grp{margin-top:18px;padding-top:16px;border-top:1px solid var(--rule)}
+.grp:first-of-type{margin-top:4px;padding-top:0;border-top:0}
+.grp h3{font-size:15px;margin:0}
+.terms{margin:14px 0 0;display:grid;gap:6px;background:var(--bg);border-radius:12px;padding:12px 14px}
+.terms div{display:grid;grid-template-columns:8em minmax(0,1fr);gap:2px 12px;font-size:14px}
+.terms dt{color:var(--ink2)}
+.terms dd{margin:0}
+.res{display:flex;flex-direction:column;gap:22px}
+.k{margin:0;font-size:15px;color:var(--ink2);font-weight:500}
+.hero{margin:4px 0 0;font-weight:700;font-size:clamp(40px,8vw,68px);line-height:1;letter-spacing:-.03em;display:flex;flex-wrap:wrap;align-items:baseline;gap:.18em}
+.hero .cur{font-size:.42em;font-weight:600;color:var(--ink2);letter-spacing:0}
+.ctx{margin:10px 0 0;color:var(--ink2)}
+.bars{display:grid;gap:12px}
+.br{display:grid;grid-template-columns:4em minmax(0,1fr) max-content;align-items:center;gap:12px}
+.bn{font-weight:600}
+.bt{display:flex;gap:2px;height:22px}
+.bt i{display:block;height:100%;transition:width .35s ease}
+.bt i:last-child{border-start-end-radius:4px;border-end-end-radius:4px}
+.land-o{background:var(--land)}.build-o{background:var(--build)}
+.land-l{background:repeating-linear-gradient(135deg,var(--land) 0 3px,color-mix(in srgb,var(--land) 28%,var(--panel)) 3px 7px)}
+.build-l{background:repeating-linear-gradient(135deg,var(--build) 0 3px,color-mix(in srgb,var(--build) 28%,var(--panel)) 3px 7px)}
+.sw.o{background:var(--ink2)}.sw.l{background:repeating-linear-gradient(135deg,var(--ink2) 0 2px,color-mix(in srgb,var(--ink2) 25%,var(--panel)) 2px 5px)}
+.bv,.nw{white-space:nowrap}
+.bv{font-weight:600;font-variant-numeric:tabular-nums}
+.lgd{display:flex;flex-wrap:wrap;gap:4px 18px;margin:10px 0 0;padding-inline-start:calc(4em + 12px);font-size:14px;color:var(--ink2)}
+.lgd span{display:inline-flex;align-items:center;gap:6px}
+.tiles{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tile{background:var(--bg);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.tile.hl{background:color-mix(in srgb,var(--fin) 12%,var(--panel))}
+.tl{font-size:14px;color:var(--ink2)}
+.tv{font-size:clamp(19px,2.2vw,24px);font-weight:700;letter-spacing:-.01em}
+.ts{font-size:13px;color:var(--mut)}
+.btn{font:inherit;font-weight:600;font-size:15px;min-height:46px;padding:0 18px;border-radius:10px;border:1px solid var(--line);background:none;color:var(--ink);cursor:pointer}
+.btn:hover{background:var(--bg)}
+.btn.pri{background:var(--ink);color:var(--panel);border-color:var(--ink)}
+.acts{display:flex;flex-wrap:wrap;gap:12px;align-items:center}
+.mut{color:var(--mut);font-weight:400;font-size:.8em}
+#cpT{width:100%;min-height:260px;font:inherit;font-size:15px;padding:12px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--ink)}
+.fine{margin:0;font-size:13px;color:var(--mut)}
+h2.sec{font-size:clamp(22px,2.6vw,28px);line-height:1.15;margin:0 0 14px;letter-spacing:-.015em;text-wrap:balance}
+.areas{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:900px){.areas{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.area{background:var(--panel);border:1px solid var(--rule);border-top:5px solid var(--c);border-radius:16px;padding:18px 20px}
+.area.land{--c:var(--land);--ct:var(--landT)}.area.build{--c:var(--build);--ct:var(--buildT)}.area.fin{--c:var(--fin);--ct:var(--finT)}
+.area header{display:flex;justify-content:space-between;align-items:baseline;gap:12px}
+.area h3{margin:0;font-size:19px;color:var(--ct)}
+.area .tot{font-size:20px;font-weight:700;white-space:nowrap}
+.spl{display:flex;flex-wrap:wrap;gap:4px 16px;margin:6px 0 10px;font-size:14px;color:var(--ink2)}
+.rows{list-style:none;margin:0;padding:0}
+.rows li{display:grid;grid-template-columns:minmax(0,1fr) max-content;gap:0 12px;padding:9px 0 9px;padding-inline-start:20px;border-top:1px solid var(--rule);position:relative}
+.rows li::before{content:"";position:absolute;inset-inline-start:2px;top:16px;width:10px;height:10px;border-radius:3px;background:var(--c)}
+.rows li.loan::before{background:repeating-linear-gradient(135deg,var(--c) 0 2px,color-mix(in srgb,var(--c) 25%,var(--panel)) 2px 5px)}
+.rows .w{font-weight:600}
+.rows .x{grid-column:1;font-size:14px;color:var(--ink2)}
+.rows .m{grid-column:2;grid-row:1/span 2;align-self:center;font-weight:700;text-align:left}
+.tag{display:inline-block;margin-inline-start:6px;font-size:12.5px;font-weight:600;padding:0 6px;border-radius:5px;line-height:19px;color:var(--ct);background:color-mix(in srgb,var(--c) 14%,var(--panel));vertical-align:1px}
+.chp h2{font-size:clamp(22px,2.6vw,28px);line-height:1.15;margin:0;letter-spacing:-.015em}
+.cap{margin:6px 0 4px;color:var(--ink2)}
+.clg{display:flex;flex-wrap:wrap;gap:4px 18px;margin:0 0 8px;font-size:14px;color:var(--ink2)}
+.clg span{display:inline-flex;align-items:center;gap:6px}
+.fig{position:relative;height:280px}
+.fig svg{position:absolute;inset:0;width:100%;height:100%;direction:ltr;overflow:visible;touch-action:pan-y;outline:0}
+.fig svg:focus-visible{outline:2px solid var(--build);outline-offset:4px;border-radius:6px}
+svg text{font-family:inherit;font-size:13px;fill:var(--mut);paint-order:stroke;stroke:var(--panel);stroke-width:4px;stroke-linejoin:round}
+svg .pk{fill:var(--ink);font-weight:700;font-size:14px}
+svg .an{fill:var(--ink2)}
+.gl{stroke:var(--rule)}.bl{stroke:var(--line)}.mk{stroke:var(--ink2)}
+.bL{fill:var(--land)}.bB{fill:var(--build)}.on .bL,.on .bB{opacity:1}.dim{opacity:.45}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--panel);border-radius:10px;padding:7px 11px;font-size:14px;line-height:1.4;display:flex;flex-direction:column;white-space:nowrap;z-index:2}
+.tip b{font-size:16px}
+.tg{display:grid;gap:16px;grid-template-columns:minmax(0,1fr)}
+@media(min-width:1000px){.tg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.scroll{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-variant-numeric:tabular-nums}
+caption{text-align:start;font-weight:700;padding-bottom:6px}
+th,td{padding:9px 8px;border-bottom:1px solid var(--rule);text-align:right}
+thead th{font-size:14px;color:var(--ink2);font-weight:600}
+tbody th{font-weight:500}
+td{white-space:nowrap}
+tr.tot th,tr.tot td{font-weight:700}
+tr:last-child th,tr:last-child td{border-bottom:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+details{margin-top:16px}
+summary{cursor:pointer;font-weight:700;min-height:44px;display:flex;align-items:center;justify-content:space-between;list-style:none}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"";width:9px;height:9px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:translateY(-3px) rotate(45deg)}
+details[open] summary::after{transform:translateY(2px) rotate(-135deg)}
+.notes{margin-top:24px;color:var(--ink2);font-size:14px;max-width:80ch}
+.notes h3{font-size:16px;color:var(--ink);margin:0 0 6px}
+.notes ul{margin:0;padding-inline-start:1.2em}
+.notes li{margin:3px 0}
+.stk{position:fixed;inset-inline:0;bottom:0;z-index:5;display:none;justify-content:space-between;gap:12px;padding:12px max(16px,4vw) calc(12px + env(safe-area-inset-bottom,0px));background:var(--ink);color:var(--panel);font-size:15px}
+.stk b{white-space:nowrap}
+.stk.show{display:flex}
+@media(min-width:960px){.stk.show{display:none}}
+@media(max-width:959px){body{padding-bottom:64px}}
+@media(max-width:600px){.g2{grid-template-columns:minmax(0,1fr)}.terms div{grid-template-columns:minmax(0,1fr)}.fig{height:230px}table{font-size:14px}th,td{padding:8px 5px}.slh input{width:8.5em}}
+@media(prefers-reduced-motion:reduce){.bt i{transition:none}}
+</style>
+</head>
+<body>
+<header class="band"><div class="wrap">
+  <h1>דרור הצעירים, חירן</h1>
+  <p class="sub">בחרו מגרש, התאימו את המימון, וראו כמה הון עצמי צריך, מה משלמים ומתי, ומה השווי הצפוי של הבית.</p>
+</div></header>
+<main>
+<section class="band top" aria-label="מחשבון"><div class="wrap cg">
+  <section class="panel" id="plot" aria-labelledby="h1p">
+    <h2 class="h3" id="h1p"><span class="n">1</span>בחירת מגרש</h2>
+    <div class="mapw"><svg id="map" viewBox="0 0 1000 340" role="group" aria-label="מפת 44 היחידות בפרויקט. כל יחידה צבועה לפי גודל המגרש"></svg><div class="tip" id="mtip" hidden></div></div>
+    <div class="mlg"><span>גודל המגרש:</span><span><i class="sw" style="background:var(--s1)"></i>עד 159 מ״ר</span><span><i class="sw" style="background:var(--s2)"></i>160–179</span><span><i class="sw" style="background:var(--s3)"></i>180–199</span><span><i class="sw" style="background:var(--s4)"></i>200–219</span><span><i class="sw" style="background:var(--s5)"></i>220 ומעלה</span></div>
+    <div class="g2">
+      <label class="fl"><span class="lb">יחידה</span><span class="box"><select id="unit" aria-label="בחירת יחידה"></select></span></label>
+      <p class="fl uinfo" id="uinfo"></p>
+    </div>
+    <div class="sl"><label class="slh" for="land"><span>מחיר המגרש <span class="hint">בין 425 ל־500 אלף ₪</span></span><input id="land" inputmode="numeric" aria-label="מחיר המגרש בש״ח"></label><input type="range" class="rl" id="landR" min="425000" max="500000" step="1000" aria-label="מחיר המגרש"><span class="hint" id="ppm"></span></div>
+    <div class="sl"><label class="slh" for="build"><span>אומדן עלות הבית <span class="hint">111 מ״ר, כולל מע״מ</span></span><input id="build" inputmode="numeric" aria-label="אומדן עלות הבית בש״ח"></label><input type="range" class="rb" id="buildR" min="800000" max="1600000" step="5000" aria-label="אומדן עלות הבית"></div>
+  </section>
+  <aside class="panel res" id="res" aria-label="התוצאה">
+    <div><p class="k">הון עצמי נדרש</p>
+    <p class="hero" id="heroP"><span id="hero"></span><span class="cur">₪</span></p>
+    <p class="ctx" id="ctx"></p></div>
+    <div><div class="bars" id="bars"></div>
+    <p class="lgd"><span><i class="sw o"></i>מכספכם</span><span><i class="sw l"></i>במימון</span></p></div>
+    <div class="tiles" id="tiles"></div>
+    <div class="acts"><button type="button" class="btn pri" id="copy">העתקת הסיכום</button><span id="cpS" class="mut" role="status"></span></div>
+    <textarea id="cpT" hidden readonly aria-label="סיכום להעתקה"></textarea>
+    <p class="fine">החישוב להמחשה בלבד ואינו מהווה הצעה או התחייבות למימון, וגם לא התחייבות לשווי עתידי.</p>
+  </aside>
+  <section class="panel" id="fin" aria-labelledby="h2f">
+    <h2 class="h3" id="h2f"><span class="n">2</span>מימון וריבית</h2>
+    <div class="grp"><h3>כמה מימון תיקחו?</h3>
+      <div class="sl"><label class="slh" for="fl"><span>הלוואת קרקע</span><b id="flV"></b></label><input type="range" class="rl" id="fl" min="0" max="1000" step="10"><span class="hint" id="flH"></span></div>
+      <div class="sl"><label class="slh" for="fb"><span>הלוואת בנייה</span><b id="fbV"></b></label><input type="range" class="rb" id="fb" min="0" max="1000" step="10"><span class="hint" id="fbH"></span></div>
+    </div>
+    <div class="grp"><h3>מה אם הפריים ישתנה?</h3>
+      <div class="sl"><label class="slh" for="dp"><span>שינוי בריבית הפריים</span><b id="dpV"></b></label><input type="range" class="rf" id="dp" min="-2" max="2" step="0.25"><span class="hint" id="dpH"></span></div>
+    </div>
+    <dl class="terms">
+      <div><dt>הלוואת קרקע</dt><dd>פריים ועוד כ־2.3%, עד 80% ממחיר המגרש</dd></div>
+      <div><dt>הלוואת בנייה</dt><dd>פריים ועוד כ־1.5%, עד 80% מעלות הבית</dd></div>
+      <div><dt>עמלות מימון</dt><dd>9,440 ₪, למי שלוקח הלוואת קרקע</dd></div>
+      <div><dt>לוח זמנים משוער</dt><dd>תחילת הבנייה כשנה אחרי תשלום יתרת המגרש, ובנייה של כ־30 חודשים</dd></div>
+    </dl>
+  </section>
+  <section class="panel" id="val" aria-labelledby="h3v">
+    <h2 class="h3" id="h3v"><span class="n">3</span>שווי הבית</h2>
+    <div class="sl"><label class="slh" for="value"><span>שווי בית גמור היום <span class="hint">הערכה שמרנית: 2.4 מיליון ₪</span></span><input id="value" inputmode="numeric" aria-label="שווי בית גמור בש״ח"></label><input type="range" class="rv" id="valueR" min="1600000" max="3200000" step="10000" aria-label="שווי בית גמור"></div>
+    <div class="sl"><label class="slh" for="g"><span>עליית מחירים שנתית עד סוף הבנייה</span><b id="gV"></b></label><input type="range" class="rv" id="g" min="0" max="6" step="0.5"><span class="hint" id="gH"></span></div>
+  </section>
+</div></section>
+<section class="band" aria-labelledby="aT"><div class="wrap">
+  <h2 class="sec" id="aT">מה משלמים ומתי, לפי תחום</h2>
+  <div class="areas" id="areas"></div>
+</div></section>
+<section class="band" aria-labelledby="chT"><div class="wrap panel chp">
+  <h2 id="chT">הריבית החודשית עולה בהדרגה עם התקדמות הבנייה</h2>
+  <p class="cap" id="chC"></p>
+  <p class="clg"><span><i class="sw" style="background:var(--land)"></i>ריבית על הלוואת הקרקע</span><span><i class="sw" style="background:var(--build)"></i>ריבית על הלוואת הבנייה</span></p>
+  <div class="fig" id="fig"><svg id="ch" role="img" aria-label="ריבית חודשית לפי חודש. פירוט מלא בלוח הריבית החודשי למטה." tabindex="0"></svg><div class="tip" id="tip" hidden></div></div>
+</div></section>
+<section class="band" aria-labelledby="tT"><div class="wrap">
+  <h2 class="sec" id="tT">פירוט תוכנית המימון <span class="mut">(בש״ח)</span></h2>
+  <div class="tg">
+    <div class="panel scroll"><table id="t1"></table></div>
+    <div class="panel scroll"><table id="t2"></table></div>
+  </div>
+  <details class="panel"><summary id="t3s">לוח ריבית חודשי</summary><div class="scroll"><table id="t3"></table></div></details>
+  <div class="notes"><h3>על החישוב</h3><ul>
+    <li>החישוב מבוסס על לוח התשלומים, הריביות, אומדן העלויות ומפת המגרשים שבמצגת הפרויקט. המפה סכמטית ואינה בקנה מידה.</li>
+    <li>הריבית פשוטה ומשולמת מדי חודש, וקרן ההלוואות נפרעת בסוף הבנייה. ההנחה היא שהלוואת הקרקע נשארת עד סוף הבנייה.</li>
+    <li>הלוואת הקרקע מממנת את יתרת המגרש ב־15.4.2027, אחרי תשלומים של 110,000 ₪, ועד 80% ממחיר המגרש. ההון העצמי לבנייה משולם עד תחילת הבנייה, כולל 70,000 ₪ ו־25,000 ₪ ב־2027.</li>
+    <li>הרווח הצפוי הוא השווי הצפוי בסוף הבנייה פחות העלות הכוללת. התשואה על ההון היא הרווח הצפוי חלקי הכסף שתשקיעו מכספכם: הון עצמי, עמלות וריבית.</li>
+    <li>האומדן כולל מע״מ, תכנון, פיקוח ודמי ניהול. לא נכללו: מס רכישה, שכ״ט עו״ד ונאמנות, הוצאות משפטיות ומיסים במכירה.</li>
+    <li>ריבית הפריים 4.75%, לפי החלטת בנק ישראל מ־23 בנובמבר 2026.</li>
+    <li>החישוב להמחשה בלבד ואינו מהווה הצעה או התחייבות למימון או לשווי עתידי. המימון כפוף לאישור הגורם המממן, והתנאים הסופיים ייקבעו בהסכמי המימון.</li>
+  </ul></div>
+</div></section>
+</main>
+<div class="stk" id="stk" aria-hidden="true"><span>הון עצמי <b id="sE"></b></span><span>תשואה על ההון <b id="sR"></b></span></div>
+<script>
+{
+const $=id=>document.getElementById(id);
+const T={prime:4.75,mL:2.3,mB:1.5,fee:9440,pre:12,months:30,maxL:80,maxB:80}; // project terms
+const PAY={join:20000,dec:90000,feb:70000,oct:25000}; // fixed payments from the project's schedule
+const D={land:426000,build:1229000,fl:1000,fb:1000,dp:0,val:2400000,g:0,unit:''};
+// Units from the deck's site plan: building, land size of units 1-4 (m²), parking and shared areas of units 1-4 (m²)
+const B=[['540',[177,202,196,180],[8,43,44,8]],['541',[150,184,170,164],[8,37,38,8]],['542',[149,197,200,150],[8,36,34,8]],['543',[150,198,200,148],[8,35,35,8]],['544',[150,198,200,148],[8,35,35,8]],['545',[166,228,204,158],[9,36,38,9]],['546',[147,222,220,149],[8,35,35,8]],['547',[176,227,213,176],[9,36,37,9]],['548',[224,247,206,220],[10,37,37,10]],['549',[148,195,198,146],[9,36,36,9]],['550',[214,170,185,142],[9,58,40,9]]];
+const UNITS={};for(const [b,sz,sh] of B)for(let k=1;k<=4;k++)UNITS[`${b}-${k}`]={size:sz[k-1],shared:sh[k-1]};
+const nf=new Intl.NumberFormat('he-IL',{maximumFractionDigits:0});
+const n1=new Intl.NumberFormat('he-IL',{maximumFractionDigits:1});
+const n2=new Intl.NumberFormat('he-IL',{maximumFractionDigits:2});
+const cf=new Intl.NumberFormat('he-IL',{notation:'compact',maximumFractionDigits:1});
+const mfmt=new Intl.DateTimeFormat('he-IL',{month:'long',year:'numeric'});
+const mon=i=>new Date(2027,4+i,1); // interest month i, from May 2027 (land loan drawn 15.4.2027)
+const NOW=new Date(2026,10,1);
+const ils=v=>(v<0?'-':'')+nf.format(Math.round(Math.abs(v)))+' ₪',pc=v=>n2.format(v)+'%';
+const num=s=>{const v=parseFloat(String(s).replace(/[^\d.]/g,''));return isFinite(v)?v:0};
+const r1=x=>Math.round(x*10)/10,r2=x=>Math.round(x*100)/100,cl=(v,a,b)=>Math.min(b,Math.max(a,v));
+const st={...D};
+let hi=-1,R=null,V=null,geo=null;
+
+// Pure model, per unit
+function calc(p){
+  const prime=T.prime+p.dp,rL=Math.max(0,prime+T.mL),rB=Math.max(0,prime+T.mB);
+  const pre=Math.min(p.land,PAY.join+PAY.dec),maxLL=Math.max(0,Math.min(p.land*T.maxL/100,p.land-pre)),maxBL=p.build*T.maxB/100;
+  const pick=(mx,f)=>f>=1000?mx:Math.min(mx,Math.round(mx*f/1e6)*1000);
+  const lL=pick(maxLL,p.fl),bL=pick(maxBL,p.fb),fee=lL>0?T.fee:0,T0=T.pre,Tc=T.months,N=T0+Tc,rows=[];
+  for(let m=1;m<=N;m++)rows.push({li:lL*rL/1200,bi:m>T0?bL*(m-T0)/Tc*rB/1200:0});
+  return{prime,rL,rB,lL,bL,capped:maxLL<p.land*T.maxL/100,fee,T0,Tc,N,rows};
+}
+function totals(p){
+  const C=calc(p),r=Math.round,v={land:r(p.land),build:r(p.build),lL:r(C.lL),bL:r(C.bL),fee:r(C.fee)};
+  v.months=C.rows.map(x=>({a:r(x.li),b:r(x.bi)}));v.iL=v.months.reduce((t,x)=>t+x.a,0);v.iB=v.months.reduce((t,x)=>t+x.b,0);
+  v.lE=v.land-v.lL;v.bE=v.build-v.bL;v.cost=v.land+v.build;v.loan=v.lL+v.bL;v.eq=v.lE+v.bE;v.int=v.iL+v.iB;v.fin=v.fee+v.int;v.all=v.cost+v.fin;v.cashIn=v.eq+v.fin;
+  const m0=v.months[0],mN=v.months[C.N-1];v.first=m0?m0.a+m0.b:0;v.peak=mN?mN.a+mN.b:0;
+  v.end=mon(C.N-1);v.yrs=Math.max(0,((v.end.getFullYear()-NOW.getFullYear())*12+v.end.getMonth()-NOW.getMonth())/12);
+  v.valEnd=r(p.val*Math.pow(1+p.g/100,v.yrs));v.gain=v.valEnd-v.all;v.roe=v.cashIn?v.gain/v.cashIn:0;
+  return{C,v};
+}
+
+// Schematic site plan: 11 buildings of 4 units along the project's arc (540 west, 550 east)
+const bez=t=>{const u=1-t;return[u*u*20+2*u*t*480+t*t*1000,u*u*140+2*u*t*470+t*t*40]};
+const cls=s=>s<160?1:s<180?2:s<200?3:s<220?4:5;
+function drawMap(){
+  const S=[];let acc=0,pv=bez(0);
+  for(let i=0;i<=600;i++){const p=bez(i/600);acc+=Math.hypot(p[0]-pv[0],p[1]-pv[1]);S.push({l:acc,p});pv=p}
+  const BW=80,BD=74,GAP=8,EX=26,start=(acc-(11*BW+10*GAP+EX))/2;
+  const at=len=>{let i=S.findIndex(s=>s.l>=len);i=cl(i,1,S.length-2);const a=S[i-1].p,b=S[i+1].p;return{p:S[i].p,a:Math.atan2(b[1]-a[1],b[0]-a[0])}};
+  const off=d=>S.filter((_,i)=>i%8===0).map(s=>{const {p,a}=at(s.l);return[p[0]+Math.sin(a)*d,p[1]-Math.cos(a)*d]});
+  const path=pts=>'M'+pts.map(q=>q[0].toFixed(1)+' '+q[1].toFixed(1)).join('L');
+  let g=`<path class="road" d="${path(off(BD/2+28))}"/><path class="park" d="${path(off(-(BD/2+22)))}"/>`;
+  const rp=off(BD/2+28)[6],pp=off(-(BD/2+22))[Math.floor(off(1).length*0.47)];
+  g+=`<text class="ml" x="${rp[0]}" y="${rp[1]+4}">רחוב</text><text class="ml" x="${pp[0]}" y="${pp[1]+26}" text-anchor="middle">שטח ירוק</text>`;
+  B.forEach(([b,sz],i)=>{
+    const c=start+i*(BW+GAP)+(i>=6?EX:0)+BW/2,{p,a}=at(c),W2=BW/2,H2=BD/2,uw=W2-3,uh=H2-3;
+    const pos={4:[-W2+2,-H2+2],1:[1,-H2+2],3:[-W2+2,1],2:[1,1]};
+    g+=`<g transform="translate(${p[0].toFixed(1)} ${p[1].toFixed(1)}) rotate(${(a*180/Math.PI).toFixed(1)})"><rect class="lot" x="${-W2}" y="${-H2}" width="${BW}" height="${BD}" rx="7"/>`;
+    for(const k of [1,2,3,4]){const id=`${b}-${k}`,s=sz[k-1],[x,y]=pos[k];g+=`<rect class="u c${cls(s)}" data-id="${id}" x="${x}" y="${y}" width="${uw}" height="${uh}" rx="4" tabindex="0" role="button" aria-label="יחידה ${id}, מגרש ${s} מ״ר"/>`}
+    g+=`<text x="0" y="${-H2-5}" text-anchor="middle">${b}</text></g>`;
+  });
+  const m=$('map');m.innerHTML=g;
+  const bb=m.getBBox();if(bb.width)m.setAttribute('viewBox',`${(bb.x-14).toFixed(0)} ${(bb.y-14).toFixed(0)} ${(bb.width+28).toFixed(0)} ${(bb.height+28).toFixed(0)}`);
+  markUnit();
+}
+function markUnit(){for(const el of document.querySelectorAll('#map .u'))el.classList.toggle('on',el.dataset.id===st.unit)}
+function pickUnit(id){st.unit=id;$('unit').value=id;markUnit();render()}
+const mtip=$('mtip');
+$('map').addEventListener('click',e=>{const u=e.target.closest('.u');if(u)pickUnit(u.dataset.id)});
+$('map').addEventListener('keydown',e=>{const u=e.target.closest('.u');if(u&&(e.key==='Enter'||e.key===' ')){e.preventDefault();pickUnit(u.dataset.id)}});
+$('map').addEventListener('pointerover',e=>{const u=e.target.closest('.u');if(!u){mtip.hidden=true;return}const d=UNITS[u.dataset.id],w=$('map').parentElement.getBoundingClientRect(),q=u.getBoundingClientRect();mtip.innerHTML=`<b>יחידה ${u.dataset.id}</b><span>מגרש ${d.size} מ״ר</span>`;mtip.hidden=false;mtip.style.left=cl(q.left-w.left+q.width/2-mtip.offsetWidth/2+$('map').parentElement.scrollLeft,0,w.width-mtip.offsetWidth)+'px';mtip.style.top=Math.max(0,q.top-w.top-mtip.offsetHeight-8)+'px'});
+$('map').addEventListener('pointerleave',()=>{mtip.hidden=true});
+$('unit').innerHTML='<option value="">בחרו יחידה</option>'+B.map(([b,sz])=>`<optgroup label="בניין ${b}">${sz.map((s,k)=>`<option value="${b}-${k+1}">${b}-${k+1}, מגרש ${s} מ״ר</option>`).join('')}</optgroup>`).join('');
+$('unit').addEventListener('change',e=>pickUnit(e.target.value));
+
+function render(){
+  const o=totals(st);R=o.C;const v=o.v,N=x=>nf.format(x);V=v;
+  const j1=Math.min(PAY.join,v.land),j2=Math.min(PAY.dec,Math.max(0,v.land-PAY.join)),own=Math.max(0,v.land-j1-j2-v.lL),top=Math.max(0,v.bE-PAY.feb-PAY.oct);
+  const monthly=v.first===v.peak?ils(v.peak):v.first?`${ils(v.first)} עד ${ils(v.peak)}`:`עד ${ils(v.peak)}`;
+  const nwp=x=>`<span class="nw">${x}</span>`,monthlyH=v.first===v.peak?nwp(ils(v.peak)):v.first?`${nwp(ils(v.first))} ${nwp('עד '+ils(v.peak))}`:nwp('עד '+ils(v.peak));
+  v.areas=[
+    {k:'land',t:'מגרש',tot:v.land,spl:[['מכספכם',v.lE],['במימון',v.lL]],rows:[
+      {w:'בהצטרפות',x:'מקדמה על חשבון המגרש',n:j1},
+      {w:'עד 13.12.2026',x:'תשלום על חשבון המגרש',n:j2},
+      {w:'15.4.2027',x:'יתרת המגרש, מהלוואת הקרקע',n:v.lL,loan:1},
+      {w:'15.4.2027',x:v.lL?'יתרת המגרש, החלק שלכם':'יתרת המגרש',n:own}]},
+    {k:'build',t:'בנייה לפי האומדן',tot:v.build,spl:[['מכספכם',v.bE],['במימון',v.bL]],rows:[
+      {w:'15.2.2027',x:'תשלום ראשון על חשבון האומדן',n:PAY.feb},
+      {w:'1.10.2027',x:'תשלום שני על חשבון האומדן',n:PAY.oct},
+      v.bL?{w:'תחילת הבנייה',x:`השלמת ההון העצמי ל־${pc(r1(v.bE/v.build*100))} מעלות הבית`,n:top}:{w:'במהלך הבנייה',x:'יתרת עלות הבית, לפי התקדמות העבודות',n:top},
+      {w:'במהלך הבנייה',x:'מהלוואת הבנייה, לפי התקדמות העבודות',n:v.bL,loan:1}]},
+    {k:'fin',t:'מימון',tot:v.fin,spl:[['עמלות',v.fee],['ריבית',v.int]],rows:[
+      {w:'עד 13.12.2026',x:'עמלות מימון',n:v.fee},
+      {w:'מדי חודש',x:`ריבית בלבד, ${monthly}`,n:v.int},
+      {w:'בסוף הבנייה',x:'החזר קרן ההלוואות, למשל באמצעות משכנתא',n:v.loan,loan:1}]}
+  ].map(a=>({...a,rows:a.rows.filter(x=>x.n>0)}));
+  // Readout
+  $('hero').textContent=N(v.eq);
+  $('ctx').textContent=v.cost?`${pc(r1(v.eq/v.cost*100))} מעלות המגרש והבית, שעומדת על ${ils(v.cost)}`:'הזינו את מחיר המגרש ואת אומדן הבית';
+  const mx=Math.max(v.land,v.build)||1,seg=(c,w)=>w>0?`<i class="${c}" style="width:${w/mx*100}%"></i>`:'';
+  $('bars').innerHTML=[['קרקע','land',v.land,v.lE,v.lL],['בנייה','build',v.build,v.bE,v.bL]].map(([t,k,c,e,f])=>`<div class="br"><span class="bn">${t}</span><span class="bt">${seg(k+'-o',e)}${seg(k+'-l',f)}</span><span class="bv">${ils(c)}</span></div>`).join('');
+  const endTxt=mfmt.format(v.end),mult=v.cashIn?(v.cashIn+v.gain)/v.cashIn:0;
+  $('tiles').innerHTML=[
+    ['ריבית חודשית',v.peak?monthlyH:'אין',v.peak?'ריבית בלבד, עד סוף הבנייה':'בלי הלוואות'],
+    ['עלויות המימון',ils(v.fin),`עמלות ${ils(v.fee)} וריבית ${ils(v.int)}`],
+    ['עלות כוללת',ils(v.all),'מגרש, בית ועלויות מימון'],
+    ['שווי צפוי בסוף הבנייה',ils(v.valEnd),endTxt],
+    ['רווח צפוי',ils(v.gain),'השווי הצפוי פחות העלות הכוללת',1],
+    ['תשואה על ההון',pc(r1(v.roe*100)),`על ${ils(v.cashIn)} מכספכם${v.gain>0?`, פי ${n1.format(mult)}`:''}`,1]
+  ].map(([l,val,s,h])=>`<div class="tile${h?' hl':''}"><span class="tl">${l}</span><span class="tv">${val.includes('<')?val:val.replace(/(-?[\d,]+ ₪)/g,'<span class="nw">$1</span>')}</span><span class="ts">${s}</span></div>`).join('');
+  // Inputs feedback
+  const u=UNITS[st.unit];
+  $('uinfo').innerHTML=u?`<span>יחידה <b>${st.unit}</b>: מגרש <b>${u.size} מ״ר</b>, ועוד ${u.shared} מ״ר חניות ושטחים משותפים</span>`:'בחרו יחידה במפה או ברשימה כדי לראות את גודל המגרש';
+  $('ppm').textContent=u&&v.land?`${ils(v.land/u.size)} למ״ר מגרש`:'';
+  $('flV').textContent=ils(v.lL);$('fbV').textContent=ils(v.bL);
+  $('flH').textContent=v.lL?`${pc(r1(v.lL/v.land*100))} ממחיר המגרש${st.fl>=1000?(R.capped?', כל יתרת המגרש אחרי 110,000 ₪ ששולמו':', המקסימום'):''}`:'בלי הלוואת קרקע';
+  $('fbH').textContent=v.bL?`${pc(r1(v.bL/v.build*100))} מעלות הבית${st.fb>=1000?', המקסימום':''}`:'בלי הלוואת בנייה';
+  $('dpV').textContent=st.dp===0?'ללא שינוי':(st.dp>0?'+':'−')+pc(Math.abs(st.dp));
+  const base=st.dp?totals({...st,dp:0}).v:v,dInt=v.int-base.int;
+  $('dpH').textContent=`פריים ${pc(r2(R.prime))}: הלוואת קרקע ${pc(r2(R.rL))}, הלוואת בנייה ${pc(r2(R.rB))}`+(dInt?(dInt<0?`. חיסכון בריבית: ${ils(-dInt)}`:`. תוספת ריבית: ${ils(dInt)}`):'');
+  $('gV').textContent=st.g?pc(st.g)+' בשנה':'בלי עלייה';
+  $('gH').textContent=`שווי צפוי ב${endTxt}: ${ils(v.valEnd)}`;
+  // Areas
+  $('areas').innerHTML=v.areas.map(a=>`<article class="area ${a.k}"><header><h3>${a.t}</h3><span class="tot">${ils(a.tot)}</span></header><p class="spl">${a.spl.map(([l,n])=>`<span>${l} <b class="nw">${ils(n)}</b></span>`).join('')}</p><ol class="rows">${a.rows.map(x=>`<li${x.loan?' class="loan"':''}><span class="w">${x.w}</span><span class="x">${x.x}</span><span class="m"><span class="nw">${ils(x.n)}</span>${x.loan?'<span class="tag">מימון</span>':''}</span></li>`).join('')}</ol></article>`).join('');
+  // Chart and tables
+  $('chT').textContent=v.bL?'הריבית החודשית עולה בהדרגה עם התקדמות הבנייה':'הריבית החודשית לאורך התקופה';
+  $('chC').textContent=`כל עמודה היא חודש, מתשלום יתרת המגרש ב־15.4.2027 ועד סוף הבנייה (${R.N} חודשים). הסכומים בש״ח.`;
+  $('t1').innerHTML=`<caption>מקורות ושימושים</caption><thead><tr><th scope="col"><span class="sr">רכיב</span></th><th scope="col">עלות</th><th scope="col">מימון</th><th scope="col">הון עצמי</th></tr></thead><tbody>${[['קרקע',v.land,v.lL,v.lE],['בנייה',v.build,v.bL,v.bE],['סה״כ',v.cost,v.loan,v.eq]].map(([a,b,c,d],i)=>`<tr${i===2?' class="tot"':''}><th scope="row">${a}</th><td>${N(b)}</td><td>${N(c)}</td><td>${N(d)}</td></tr>`).join('')}</tbody>`;
+  $('t2').innerHTML=`<caption>עלויות, שווי ותשואה</caption><tbody>${[['עמלות מימון',v.fee],[`ריבית על הלוואת הקרקע (${pc(r2(R.rL))})`,v.iL],[`ריבית על הלוואת הבנייה (${pc(r2(R.rB))})`,v.iB],['עלות כוללת, כולל מימון',v.all,1],['שווי צפוי בסוף הבנייה',v.valEnd],['רווח צפוי',v.gain,1],['הכסף שתשקיעו מכספכם',v.cashIn]].map(([a,b,t])=>`<tr${t?' class="tot"':''}><th scope="row">${a}</th><td>${(b<0?'-':'')+N(Math.abs(b))}</td></tr>`).join('')}</tbody>`;
+  $('t3s').textContent=`לוח ריבית חודשי (${R.N} חודשים)`;
+  $('t3').innerHTML=`<thead><tr><th scope="col">חודש</th><th scope="col">ריבית קרקע</th><th scope="col">ריבית בנייה</th><th scope="col">סה״כ לחודש</th></tr></thead><tbody>${v.months.map((x,i)=>`<tr><th scope="row">${mfmt.format(mon(i))}</th><td>${N(x.a)}</td><td>${N(x.b)}</td><td>${N(x.a+x.b)}</td></tr>`).join('')}</tbody>`;
+  $('sE').textContent=ils(v.eq);$('sR').textContent=pc(r1(v.roe*100));
+  draw();if(hi>=0)tipAt(Math.min(hi,R.N-1));
+}
+
+// Monthly interest chart, stacked by loan
+const s=$('ch'),fig=$('fig'),tip=$('tip');
+const niceStep=x=>{const p=10**Math.floor(Math.log10(x)),f=x/p;return(f<=1?1:f<=2?2:f<=2.5?2.5:f<=5?5:10)*p};
+function draw(){
+  const W=s.clientWidth,H=s.clientHeight;if(!W||!H||!V)return;
+  const m=V.months,n=m.length,vals=m.map(x=>x.a+x.b);
+  if(!n||!Math.max(...vals)){geo=null;tip.hidden=true;s.innerHTML=`<text x="${W/2}" y="${H/2}" text-anchor="middle">בלי הלוואות אין ריבית חודשית.</text>`;return}
+  const sm=W<520,L=sm?42:58,Rp=10,Tp=34,Bt=28,pw=W-L-Rp,ph=H-Tp-Bt,top0=Math.max(...vals),stp=niceStep(top0/4),top=Math.ceil(top0/stp)*stp;
+  const y=t=>Tp+ph-t/top*ph,y0=y(0),step=pw/n,bw=Math.max(1,Math.min(24,step-2)),tk=t=>top>=1e4?cf.format(t):nf.format(t);
+  const rr=(x,yt,w,h,r)=>r>0?`M${x} ${yt+h}V${yt+r}Q${x} ${yt} ${x+r} ${yt}H${x+w-r}Q${x+w} ${yt} ${x+w} ${yt+r}V${yt+h}Z`:`M${x} ${yt+h}V${yt}H${x+w}V${yt+h}Z`;
+  let g='',yr=0;
+  for(let j=0;j<=Math.round(top/stp);j++){const t=j*stp,yy=y(t);g+=`<line class="gl" x1="${L}" x2="${W-Rp}" y1="${yy}" y2="${yy}"/><text x="${L-8}" y="${yy+4}" text-anchor="end">${tk(t)}</text>`}
+  m.forEach((q,i)=>{const x=L+step*i+(step-bw)/2,hA=y0-y(q.a),hB=y0-y(q.b),gap=hA&&hB?1.5:0,cA=hi>=0&&i!==hi?' dim':'';
+    if(hA)g+=`<path class="bL${cA}" d="${rr(x,y0-hA,bw,hA,hB?0:Math.min(4,bw/2,hA))}"/>`;
+    if(hB)g+=`<path class="bB${cA}" d="${rr(x,y0-hA-gap-hB,bw,hB,Math.min(4,bw/2,hB))}"/>`});
+  g+=`<line class="bl" x1="${L}" x2="${W-Rp}" y1="${y0}" y2="${y0}"/>`;
+  for(let i=0;i<n;i++){const d=mon(i);if(d.getMonth()===0){yr++;g+=`<text x="${L+step*i+step/2}" y="${H-8}" text-anchor="middle">${d.getFullYear()}</text>`}}
+  if(!yr){const d=mon(0);g+=`<text x="${L+step/2}" y="${H-8}" text-anchor="start">${d.getMonth()+1}/${d.getFullYear()}</text>`}
+  if(R.T0>0&&R.T0<n){const xm=L+step*R.T0,rt=xm+100<W-Rp;g+=`<line class="mk" x1="${xm}" x2="${xm}" y1="${Tp-16}" y2="${y0}"/><text class="an" x="${rt?xm+6:xm-6}" y="${Tp-20}" text-anchor="${rt?'start':'end'}">תחילת הבנייה</text>`}
+  g+=`<text class="pk" x="${Math.min(L+step*(n-1)+(step+bw)/2,W-2)}" y="${y(vals[n-1])-8}" text-anchor="end">${nf.format(vals[n-1])}</text>`;
+  s.innerHTML=g;geo={L,step,n,y,vals};
+}
+function tipAt(i){
+  if(!geo||i<0)return;hi=i;draw();if(!geo)return;
+  const m=V.months[i],x=geo.L+geo.step*i+geo.step/2,yy=geo.y(geo.vals[i]);
+  tip.innerHTML=`<b>${ils(m.a+m.b)}</b><span>${mfmt.format(mon(i))}</span><span>קרקע ${ils(m.a)}, בנייה ${ils(m.b)}</span>`;tip.hidden=false;
+  const fw=fig.clientWidth,tw=tip.offsetWidth,th=tip.offsetHeight;
+  tip.style.left=cl(x-tw/2,0,fw-tw)+'px';tip.style.top=Math.max(-th/2,yy-th-12)+'px';
+}
+function tipOff(){hi=-1;tip.hidden=true;draw()}
+const idx=e=>Math.floor((e.clientX-s.getBoundingClientRect().left-geo.L)/geo.step);
+s.addEventListener('pointermove',e=>{if(!geo)return;const i=idx(e);if(i>=0&&i<geo.n&&i!==hi)tipAt(i)});
+s.addEventListener('pointerdown',e=>{if(!geo)return;const i=idx(e);if(i>=0&&i<geo.n)tipAt(i)});
+s.addEventListener('pointerleave',e=>{if(e.pointerType==='mouse')tipOff()});
+s.addEventListener('focus',()=>{if(geo&&hi<0)tipAt(geo.n-1)});
+s.addEventListener('blur',tipOff);
+s.addEventListener('keydown',e=>{if(!geo||!['ArrowLeft','ArrowRight','Home','End'].includes(e.key))return;e.preventDefault();tipAt(e.key==='Home'?0:e.key==='End'?geo.n-1:cl((hi<0?geo.n-1:hi)+(e.key==='ArrowRight'?1:-1),0,geo.n-1))});
+const ro=new ResizeObserver(()=>{if(hi>=0)tipAt(hi);else draw()});ro.observe(s);
+
+// Controls: number fields paired with sliders
+const pair=(fid,rid,key,lo,hi2)=>{
+  $(rid).addEventListener('input',e=>{st[key]=+e.target.value;$(fid).value=nf.format(st[key]);render()});
+  $(fid).addEventListener('input',e=>{st[key]=num(e.target.value);$(rid).value=cl(st[key],lo,hi2);render()});
+  $(fid).addEventListener('blur',e=>{e.target.value=nf.format(st[key])});
+};
+pair('land','landR','land',425000,500000);pair('build','buildR','build',800000,1600000);pair('value','valueR','val',1600000,3200000);
+for(const k of ['fl','fb','dp','g'])$(k).addEventListener('input',e=>{st[k]=+e.target.value;render()});
+for(const f of ['land','build','value'])$(f).addEventListener('keydown',e=>{if(e.key==='Enter')e.target.blur()});
+
+function summary(){
+  const v=V;return['דרור הצעירים, חירן: תוכנית המימון שלי',
+  st.unit?`יחידה ${st.unit}, מגרש ${UNITS[st.unit].size} מ״ר`:'',
+  `מחיר המגרש: ${ils(v.land)}. אומדן הבית: ${ils(v.build)}`,
+  `הון עצמי נדרש: ${ils(v.eq)}`,
+  `הלוואות: קרקע ${ils(v.lL)} (${pc(r2(R.rL))}), בנייה ${ils(v.bL)} (${pc(r2(R.rB))})`,
+  '',...v.areas.flatMap(a=>[`${a.t}: ${ils(a.tot)}`,...a.rows.map(x=>`  ${x.w}: ${ils(x.n)}${x.loan?' (מימון)':''}, ${x.x}`)]),'',
+  `עלות כוללת, כולל מימון: ${ils(v.all)}`,
+  `שווי צפוי בסוף הבנייה: ${ils(v.valEnd)}`,
+  `רווח צפוי: ${ils(v.gain)}. תשואה על ההון: ${pc(r1(v.roe*100))}`,'',
+  'החישוב להמחשה בלבד ואינו מהווה הצעה או התחייבות למימון או לשווי עתידי.'].filter((x,i,a)=>x!==''||a[i-1]!=='').join('\n');
+}
+$('copy').addEventListener('click',async()=>{const t=summary(),a=$('cpT');try{await navigator.clipboard.writeText(t);a.hidden=true;$('cpS').textContent='הסיכום הועתק. אפשר להדביק אותו בוואטסאפ או במייל.'}catch(_){a.value=t;a.hidden=false;a.focus();a.select();$('cpS').textContent='ההעתקה האוטומטית לא זמינה כאן. סמנו את הטקסט והעתיקו:'}});
+const io=new IntersectionObserver(([en])=>$('stk').classList.toggle('show',!en.isIntersecting));io.observe($('heroP'));
+
+$('land').value=nf.format(st.land);$('landR').value=st.land;$('build').value=nf.format(st.build);$('buildR').value=st.build;
+$('value').value=nf.format(st.val);$('valueR').value=st.val;$('fl').value=st.fl;$('fb').value=st.fb;$('dp').value=st.dp;$('g').value=st.g;
+drawMap();render();
+}
+</script>
+</body>
+</html>
